@@ -255,16 +255,17 @@ Parede Instalada
 
 </div>
 
-<script type="module">
+<!-- FIREBASE CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+<script>
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+// ========================================
+// FIREBASE CONFIG
+// ========================================
+
+ const firebaseConfig = {
     apiKey: "AIzaSyBW2fsq1qlA_uZj8m4HfDtdkXZqVGlDB4U",
     authDomain: "obra-e058e.firebaseapp.com",
     databaseURL: "https://obra-e058e-default-rtdb.firebaseio.com",
@@ -273,12 +274,45 @@ const firebaseConfig = {
     messagingSenderId: "763537647593",
     appId: "1:763537647593:web:c166c2283b06cf7e31cd78",
     measurementId: "G-X40NGVRR89"
-};
+  };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+firebase.initializeApp(firebaseConfig);
 
+const db = firebase.database();
+
+console.log("Firebase conectado");
+
+// ========================================
+// CARREGA DADOS DA NUVEM
+// ========================================
+
+let historico = {};
+
+db.ref('controleInstalacao')
+.on('value',(snapshot)=>{
+
+if(snapshot.exists()){
+
+historico = snapshot.val();
+
+redraw();
+
+console.log("Dados carregados da nuvem");
+
+}
+
+});
+
+// ========================================
+// RESPONSÁVEIS
+// ========================================
+
+let responsaveis =
+JSON.parse(localStorage.getItem('responsaveisBlocos')) || {};
+
+// ========================================
+// CANVAS
+// ========================================
 
 const bgCanvas = document.getElementById('bgCanvas');
 const drawCanvas = document.getElementById('drawCanvas');
@@ -290,20 +324,29 @@ const drawCtx = drawCanvas.getContext('2d');
 const dataCtx = dataCanvas.getContext('2d');
 const previewCtx = previewCanvas.getContext('2d');
 
-const etapaSelect = document.getElementById('etapa');
-const blocoSelect = document.getElementById('bloco');
-const responsavelBloco = document.getElementById('responsavelBloco');
+// ========================================
+// ELEMENTOS
+// ========================================
+
+const etapaSelect =
+document.getElementById('etapa');
+
+const blocoSelect =
+document.getElementById('bloco');
+
+const responsavelBloco =
+document.getElementById('responsavelBloco');
+
+// ========================================
 
 let drawing = false;
 
 let startX = 0;
 let startY = 0;
 
-let historico =
-JSON.parse(localStorage.getItem('controleInstalacao')) || {};
-
-let responsaveis =
-JSON.parse(localStorage.getItem('responsaveisBlocos')) || {};
+// ========================================
+// ETAPAS
+// ========================================
 
 const etapas = {
 
@@ -314,6 +357,10 @@ const etapas = {
 3:[21,22,23,24,25,26,27,28,29,30,31]
 
 };
+
+// ========================================
+// ETAPAS
+// ========================================
 
 function carregarEtapas(){
 
@@ -334,6 +381,10 @@ etapaSelect.appendChild(opt);
 }
 
 carregarEtapas();
+
+// ========================================
+// BLOCOS
+// ========================================
 
 function carregarBlocos(){
 
@@ -357,11 +408,17 @@ blocoSelect.appendChild(opt);
 
 carregarBlocos();
 
+// ========================================
+
 function chaveAtual(){
 
 return `E${etapaSelect.value}-B${blocoSelect.value}`;
 
 }
+
+// ========================================
+// RESPONSÁVEL
+// ========================================
 
 function salvarResponsavel(){
 
@@ -391,6 +448,10 @@ responsavelBloco.value =
 
 }
 
+// ========================================
+// LISTA
+// ========================================
+
 function getLista(){
 
 if(!historico[chaveAtual()]){
@@ -403,14 +464,25 @@ return historico[chaveAtual()];
 
 }
 
+// ========================================
+// SALVAR FIREBASE
+// ========================================
+
 function salvar(){
 
-localStorage.setItem(
-'controleInstalacao',
-JSON.stringify(historico)
-);
+db.ref('controleInstalacao')
+.set(historico)
+.then(()=>{
+
+console.log("Salvo na nuvem");
+
+});
 
 }
+
+// ========================================
+// RESIZE
+// ========================================
 
 function resizeCanvas(){
 
@@ -441,6 +513,10 @@ window.addEventListener(
 resizeCanvas
 );
 
+// ========================================
+// IMAGEM
+// ========================================
+
 function loadImage(){
 
 let img=new Image();
@@ -470,6 +546,10 @@ bgCanvas.height
 
 resizeCanvas();
 
+// ========================================
+// POSIÇÃO
+// ========================================
+
 function getPos(e){
 
 let r=drawCanvas.getBoundingClientRect();
@@ -477,18 +557,28 @@ let r=drawCanvas.getBoundingClientRect();
 if(e.touches){
 
 return{
+
 x:e.touches[0].clientX-r.left,
+
 y:e.touches[0].clientY-r.top
+
 };
 
 }
 
 return{
+
 x:e.clientX-r.left,
+
 y:e.clientY-r.top
+
 };
 
 }
+
+// ========================================
+// REDRAW
+// ========================================
 
 function redraw(){
 
@@ -507,6 +597,10 @@ dataCanvas.height
 );
 
 let areasOcupadas = [];
+
+// ========================================
+// LINHAS
+// ========================================
 
 getLista().forEach((l)=>{
 
@@ -529,13 +623,14 @@ drawCtx.stroke();
 
 });
 
+// ========================================
+// DADOS
+// ========================================
+
 getLista().forEach((l)=>{
 
 let mx = (l.x1+l.x2)/2;
 let my = (l.y1+l.y2)/2;
-
-let px = l.x2;
-let py = l.y2;
 
 const posicoes = [
 
@@ -611,6 +706,10 @@ ty = my + 20;
 
 }
 
+// ========================================
+// LIMITES
+// ========================================
+
 const margem = 10;
 
 if(tx < margem){
@@ -646,9 +745,13 @@ h:alturaBox
 
 });
 
+// ========================================
+// LINHA AUXILIAR
+// ========================================
+
 dataCtx.beginPath();
 
-dataCtx.moveTo(px,py);
+dataCtx.moveTo(l.x2,l.y2);
 
 dataCtx.lineTo(tx,ty);
 
@@ -657,6 +760,10 @@ dataCtx.strokeStyle='rgba(255,255,255,0.35)';
 dataCtx.lineWidth=0.8;
 
 dataCtx.stroke();
+
+// ========================================
+// DATA
+// ========================================
 
 dataCtx.font='bold 11px Arial';
 
@@ -681,6 +788,10 @@ dataTexto,
 tx,
 ty+12
 );
+
+// ========================================
+// SLUMP
+// ========================================
 
 const slumpTexto = `Slump: ${l.slump}`;
 
@@ -707,6 +818,10 @@ ty+30
 });
 
 }
+
+// ========================================
+// DRAW
+// ========================================
 
 function startDraw(e){
 
@@ -827,6 +942,10 @@ redraw();
 
 }
 
+// ========================================
+// BOTÕES
+// ========================================
+
 function undoLast(){
 
 getLista().pop();
@@ -851,129 +970,9 @@ redraw();
 
 }
 
-function downloadImage(){
-
-let temp=document.createElement('canvas');
-
-temp.width=bgCanvas.width;
-
-temp.height=bgCanvas.height;
-
-let t=temp.getContext('2d');
-
-t.drawImage(bgCanvas,0,0);
-
-t.drawImage(drawCanvas,0,0);
-
-t.drawImage(dataCanvas,0,0);
-
-let a=document.createElement('a');
-
-a.href=temp.toDataURL();
-
-a.download=chaveAtual()+'.png';
-
-a.click();
-
-}
-
-function gerarRelatorio(){
-
-let tipo = prompt(
-
-`Qual relatório deseja gerar?
-
-1 = Relatório Geral
-2 = Relatório do Dia`,
-
-'1'
-
-);
-
-if(tipo===null)return;
-
-let hoje = new Date().toLocaleDateString();
-
-let texto = `
-📋 RELATÓRIO DE INSTALAÇÃO
-
-🏗 Obra: Jardim Bacabal
-👷 Engenheiro Civil: Felipe Rodrigues
-📅 Data do Relatório: ${hoje}
-🏢 ${chaveAtual()}
-👤 Responsável: ${responsavelBloco.value}
-
-=================================
-
-`;
-
-let total = 0;
-
-if(tipo === '2'){
-
-texto += `RELATÓRIO DO DIA\n\n`;
-
-getLista().forEach(l=>{
-
-if(l.data === hoje){
-
-texto += `
-• Parede: ${l.nome}
-• Slump: ${l.slump}
-
-`;
-
-total++;
-
-}
-
-});
-
-}else{
-
-texto += `RELATÓRIO GERAL\n\n`;
-
-getLista().forEach(l=>{
-
-texto += `
-• Parede: ${l.nome}
-• Data Instalação: ${l.data}
-• Slump: ${l.slump}
-
-`;
-
-total++;
-
-});
-
-}
-
-texto += `
-=================================
-
-Total de paredes: ${total}
-
-`;
-
-navigator.clipboard.writeText(texto);
-
-alert('Relatório copiado!');
-
-}
-
-function abrirMapa(){
-
-document.getElementById('mapaModal')
-.style.display='flex';
-
-}
-
-function fecharMapa(){
-
-document.getElementById('mapaModal')
-.style.display='none';
-
-}
+// ========================================
+// EVENTOS
+// ========================================
 
 etapaSelect.addEventListener(
 'change',
