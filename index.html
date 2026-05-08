@@ -125,19 +125,29 @@ let firebaseReady = false;
 
 function initFirebase(){
 
+console.log("⏳ Firebase iniciando...");
+
 db.ref('controleInstalacao').on('value', snap=>{
 
-historico = snap.exists() ? snap.val() : {};
+if(snap.exists()){
+historico = snap.val();
+}else{
+historico = {};
+}
 
 firebaseReady = true;
 
+console.log("☁️ Firebase pronto");
+
+setTimeout(()=>{
+
 redraw();
+
+}, 200);
 
 });
 
 }
-
-initFirebase();
 
 // ================= SALVAR =================
 
