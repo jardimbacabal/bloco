@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Controle do Bloco</title>
+<title>Controle de Instalação - Obra</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
 background:#0f172a;
-color:#fff;
+color:white;
 display:flex;
 flex-direction:column;
 height:100vh;
@@ -29,8 +29,8 @@ font-weight:bold;
 background:#1e293b;
 padding:10px;
 display:flex;
-gap:8px;
 flex-wrap:wrap;
+gap:8px;
 justify-content:center;
 align-items:center;
 }
@@ -39,13 +39,12 @@ select,button{
 padding:8px;
 border:none;
 border-radius:6px;
-font-size:14px;
+cursor:pointer;
 }
 
 button{
 background:#2563eb;
-color:#fff;
-cursor:pointer;
+color:white;
 }
 
 #canvasContainer{
@@ -69,7 +68,7 @@ pointer-events:none;
 
 <body>
 
-<header>🏗 Controle do Bloco</header>
+<header>🏗 Controle de Instalação</header>
 
 <div id="toolbar">
 
@@ -104,7 +103,7 @@ pointer-events:none;
 // ================= FIREBASE =================
 
 const firebaseConfig = {
-apiKey: "AIzaSyBW2fsq1qlA_uZj8m4HfDtdkXZqVGlDB4U",
+apiKey: "SUA_API_KEY",
 authDomain: "obra-e058e.firebaseapp.com",
 databaseURL: "https://obra-e058e-default-rtdb.firebaseio.com",
 projectId: "obra-e058e",
@@ -116,18 +115,14 @@ appId: "1:763537647593:web:c166c2283b06cf7e31cd78"
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ================= ESTADO =================
+// ================= DADOS =================
 
 let historico = {};
-let firebaseReady = false;
+let carregadoFirebase = false;
 
-// ================= SYNC FIREBASE =================
+// ================= SYNC =================
 
-function initFirebase(){
-
-console.log("⏳ Firebase iniciando...");
-
-db.ref('controleInstalacao').on('value', snap=>{
+db.ref('controleInstalacao').on('value', (snap)=>{
 
 if(snap.exists()){
 historico = snap.val();
@@ -135,28 +130,18 @@ historico = snap.val();
 historico = {};
 }
 
-firebaseReady = true;
-
-console.log("☁️ Firebase pronto");
-
-setTimeout(()=>{
-
+carregadoFirebase = true;
 redraw();
 
-}, 200);
-
 });
-
-}
 
 // ================= SALVAR =================
 
 function salvar(){
 
-if(!firebaseReady) return;
+if(!carregadoFirebase) return;
 
-db.ref('controleInstalacao')
-.set(historico);
+db.ref('controleInstalacao').set(historico);
 
 }
 
@@ -168,9 +153,9 @@ const etapas = {
 3:[21,22,23,24,25,26,27,28,29,30,31]
 };
 
-const etapaSelect=document.getElementById("etapa");
-const blocoSelect=document.getElementById("bloco");
-const responsavelBloco=document.getElementById("responsavelBloco");
+const etapaSelect = document.getElementById('etapa');
+const blocoSelect = document.getElementById('bloco');
+const responsavelBloco = document.getElementById('responsavelBloco');
 
 function carregarEtapas(){
 etapaSelect.innerHTML="";
@@ -208,48 +193,60 @@ return historico[chave()];
 
 // ================= CANVAS =================
 
-const draw=document.getElementById("drawCanvas").getContext("2d");
-const data=document.getElementById("dataCanvas").getContext("2d");
-const preview=document.getElementById("previewCanvas").getContext("2d");
+const bgCanvas=document.getElementById("bgCanvas");
+const drawCanvas=document.getElementById("drawCanvas");
+const dataCanvas=document.getElementById("dataCanvas");
+const previewCanvas=document.getElementById("previewCanvas");
+
+const bg=bgCanvas.getContext("2d");
+const draw=drawCanvas.getContext("2d");
+const data=dataCanvas.getContext("2d");
+const prev=previewCanvas.getContext("2d");
 
 // ================= REDRAW =================
 
 function redraw(){
 
-draw.clearRect(0,0,9999,9999);
-data.clearRect(0,0,9999,9999);
+draw.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+data.clearRect(0,0,dataCanvas.width,dataCanvas.height);
+
+let areas=[];
 
 getLista().forEach(l=>{
 
-// LINHA
 draw.beginPath();
 draw.moveTo(l.x1,l.y1);
 draw.lineTo(l.x2,l.y2);
-
-draw.strokeStyle =
-l.responsavel==="Luís Carlos" ? "#38bdf8":"#00ff00";
-
+draw.strokeStyle = l.responsavel==="Luís Carlos" ? "#38bdf8":"#00ff00";
 draw.lineWidth=4;
 draw.stroke();
 
-// TEXTO
-let x=(l.x1+l.x2)/2;
-let y=(l.y1+l.y2)/2;
+// posição média
+let mx=(l.x1+l.x2)/2;
+let my=(l.y1+l.y2)/2;
+
+// posição simples (sem afastar demais)
+let tx=mx+20;
+let ty=my+20;
+
+// limite tela
+if(tx<10)tx=10;
+if(ty<10)ty=10;
 
 // DATA
 data.fillStyle="rgba(0,0,0,0.6)";
-data.fillRect(x,y,90,16);
+data.fillRect(tx,ty,90,16);
 
 data.fillStyle="#facc15";
 data.font="11px Arial";
-data.fillText(l.data,x,y+12);
+data.fillText(l.data,tx,ty+12);
 
 // SLUMP
 data.fillStyle="rgba(0,0,0,0.6)";
-data.fillRect(x,y+18,90,16);
+data.fillRect(tx,ty+18,90,16);
 
 data.fillStyle="#fff";
-data.fillText("S:"+l.slump,x,y+30);
+data.fillText("S:"+l.slump,tx,ty+30);
 
 });
 
@@ -257,39 +254,40 @@ data.fillText("S:"+l.slump,x,y+30);
 
 // ================= DRAW =================
 
-let startX=0,startY=0,drawing=false;
+let drawing=false,startX=0,startY=0;
 
-const canvas=document.getElementById("drawCanvas");
-
-canvas.onmousedown=(e)=>{
-let r=canvas.getBoundingClientRect();
+drawCanvas.addEventListener("mousedown",(e)=>{
+let r=drawCanvas.getBoundingClientRect();
 startX=e.clientX-r.left;
 startY=e.clientY-r.top;
 drawing=true;
-};
+});
 
-canvas.onmouseup=(e)=>{
+drawCanvas.addEventListener("mouseup",(e)=>{
 if(!drawing)return;
 drawing=false;
 
-let r=canvas.getBoundingClientRect();
+let r=drawCanvas.getBoundingClientRect();
 let x=e.clientX-r.left;
 let y=e.clientY-r.top;
 
+let nome=prompt("Nome parede:");
+let dataInst=prompt("Data:",new Date().toLocaleDateString());
+let slump=prompt("Slump:");
+
 getLista().push({
-x1:startX,
-y1:startY,
-x2:x,
-y2:y,
-data:prompt("Data:",new Date().toLocaleDateString()),
-slump:prompt("Slump:"),
+x1:startX,y1:startY,
+x2:x,y2:y,
+nome,
+data:dataInst,
+slump,
 responsavel:responsavelBloco.value
 });
 
 salvar();
 redraw();
 
-};
+});
 
 // ================= FUNÇÕES =================
 
@@ -306,35 +304,35 @@ redraw();
 }
 
 function downloadImage(){
-let c=document.createElement("canvas");
-c.width=canvas.width;
-c.height=canvas.height;
+let temp=document.createElement("canvas");
+temp.width=bgCanvas.width;
+temp.height=bgCanvas.height;
+let t=temp.getContext("2d");
 
-let ctx=c.getContext("2d");
-ctx.drawImage(canvas,0,0);
+t.drawImage(drawCanvas,0,0);
+t.drawImage(dataCanvas,0,0);
 
 let a=document.createElement("a");
+a.href=temp.toDataURL();
 a.download=chave()+".png";
-a.href=c.toDataURL();
 a.click();
 }
 
 function gerarRelatorio(){
 
-let txt="OBRA JARDIM BACABAL\nEng: Felipe Rodrigues\n\n";
+let texto=`OBRA JARDIM BACABAL\nEng: Felipe Rodrigues\n\n`;
 
 Object.keys(historico).forEach(k=>{
 historico[k].forEach(l=>{
-txt+=`${k} | ${l.data} | ${l.slump} | ${l.responsavel}\n`;
+texto+=`${k} | ${l.data} | Slump:${l.slump}\n`;
 });
 });
 
-navigator.clipboard.writeText(txt);
+navigator.clipboard.writeText(texto);
 alert("Relatório copiado!");
-
 }
 
-// ================= EVENTS =================
+// ================= INIT =================
 
 etapaSelect.onchange=()=>{
 carregarBlocos();
