@@ -3,173 +3,176 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>Controle de Instalação</title>
 
 <style>
+
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-  font-family:Arial, Helvetica, sans-serif;
-  background:#0f172a;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  overflow:hidden;
+font-family:Arial, Helvetica, sans-serif;
+background:#0f172a;
+color:white;
+display:flex;
+flex-direction:column;
+height:100vh;
+overflow:hidden;
 }
 
 header{
-  background:#020617;
-  padding:15px;
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-  border-bottom:2px solid #1e293b;
+background:#020617;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+border-bottom:2px solid #1e293b;
 }
 
 #toolbar{
-  background:#1e293b;
-  padding:10px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  align-items:center;
-  border-bottom:2px solid #334155;
+background:#1e293b;
+padding:10px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
+align-items:center;
+border-bottom:2px solid #334155;
 }
 
 select,
 button{
-  padding:10px 15px;
-  border:none;
-  border-radius:8px;
-  font-size:14px;
+padding:10px 15px;
+border:none;
+border-radius:8px;
+font-size:14px;
 }
 
 select{
-  background:#334155;
-  color:white;
-  font-weight:bold;
+background:#334155;
+color:white;
+font-weight:bold;
 }
 
 button{
-  background:#2563eb;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
+background:#2563eb;
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
 }
 
 button:hover{
-  background:#3b82f6;
-  transform:scale(1.03);
+background:#3b82f6;
+transform:scale(1.03);
 }
 
 #canvasContainer{
-  flex:1;
-  position:relative;
-  overflow:hidden;
-  background:#111827;
+flex:1;
+position:relative;
+overflow:hidden;
+background:#111827;
 }
 
 canvas{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
 }
 
 #previewCanvas{
-  pointer-events:none;
-  z-index:5;
+pointer-events:none;
+z-index:5;
 }
 
 #drawCanvas{
-  z-index:2;
+z-index:2;
 }
 
 #dataCanvas{
-  z-index:4;
-  pointer-events:none;
+z-index:4;
+pointer-events:none;
 }
 
 #miniLegenda{
-  display:flex;
-  gap:15px;
-  font-size:13px;
-  font-weight:bold;
-  align-items:center;
+display:flex;
+gap:15px;
+font-size:13px;
+font-weight:bold;
+align-items:center;
 }
 
 .bolinha{
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  display:inline-block;
-  background:#00ff00;
-  margin-right:5px;
+width:14px;
+height:14px;
+border-radius:50%;
+display:inline-block;
+background:#00ff00;
+margin-right:5px;
 }
 
 #mapaModal{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.75);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  backdrop-filter:blur(4px);
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.75);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+backdrop-filter:blur(4px);
 }
 
 #mapaBox{
-  width:90%;
-  height:90%;
-  background:#0f172a;
-  border-radius:16px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  border:2px solid #334155;
-  box-shadow:0 0 30px rgba(0,0,0,0.5);
+width:90%;
+height:90%;
+background:#0f172a;
+border-radius:16px;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+border:2px solid #334155;
+box-shadow:0 0 30px rgba(0,0,0,0.5);
 }
 
 #topoMapa{
-  background:#1e293b;
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+background:#1e293b;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 #topoMapa h2{
-  font-size:20px;
+font-size:20px;
 }
 
 #topoMapa button{
-  background:red;
-  padding:8px 14px;
-  border:none;
-  border-radius:8px;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+background:red;
+padding:8px 14px;
+border:none;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
 
 #imgMapa{
-  flex:1;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  background:#111827;
+flex:1;
+width:100%;
+height:100%;
+object-fit:contain;
+background:#111827;
 }
+
 </style>
 </head>
 
@@ -180,51 +183,134 @@ canvas{
 </header>
 
 <div id="toolbar">
-  <select id="etapa"></select>
-  <select id="bloco"></select>
 
-  <select id="responsavelBloco">
-    <option value="Clemilsson">Responsável: Clemilsson</option>
-    <option value="Luís Carlos">Responsável: Luís Carlos</option>
-  </select>
+<select id="etapa"></select>
 
-  <select id="segmento">
-    <option value="Segmento 1">Segmento 1</option>
-    <option value="Segmento 2">Segmento 2</option>
-    <option value="Segmento 3">Segmento 3</option>
-    <option value="Segmento 4">Segmento 4</option>
-    <option value="Segmento 5">Segmento 5</option>
-  </select>
+<select id="bloco"></select>
 
-  <button onclick="abrirMapa()">🗺 Mapa</button>
-  <button onclick="undoLast()">↩ Desfazer</button>
-  <button onclick="downloadImage()">📸 Baixar Planta</button>
-  <button onclick="gerarRelatorio()">📋 Gerar Relatório</button>
-  <button onclick="clearCanvas()">🗑 Limpar</button>
+<select id="responsavelBloco">
 
-  <div id="miniLegenda">
-    <div><span class="bolinha"></span>Parede Instalada</div>
-  </div>
+<option value="Clemilsson">
+Responsável: Clemilsson
+</option>
+
+<option value="Luís Carlos">
+Responsável: Luís Carlos
+</option>
+
+</select>
+
+<select id="segmento">
+
+<option value="Segmento 1">Segmento 1</option>
+<option value="Segmento 2">Segmento 2</option>
+<option value="Segmento 3">Segmento 3</option>
+<option value="Segmento 4">Segmento 4</option>
+<option value="Segmento 5">Segmento 5</option>
+
+</select>
+
+<button onclick="abrirMapa()">
+🗺 Mapa
+</button>
+
+<button onclick="undoLast()">
+↩ Desfazer
+</button>
+
+<button onclick="downloadImage()">
+📸 Baixar Planta
+</button>
+
+<button onclick="gerarRelatorio()">
+📋 Gerar Relatório
+</button>
+
+<button onclick="clearCanvas()">
+🗑 Limpar
+</button>
+
+<div id="miniLegenda">
+
+<div>
+<span class="bolinha"></span>
+Parede Instalada
+</div>
+
+</div>
+
 </div>
 
 <div id="canvasContainer">
-  <canvas id="bgCanvas"></canvas>
-  <canvas id="drawCanvas"></canvas>
-  <canvas id="dataCanvas"></canvas>
-  <canvas id="previewCanvas"></canvas>
+
+<canvas id="bgCanvas"></canvas>
+
+<canvas id="drawCanvas"></canvas>
+
+<canvas id="dataCanvas"></canvas>
+
+<canvas id="previewCanvas"></canvas>
+
 </div>
 
 <div id="mapaModal">
-  <div id="mapaBox">
-    <div id="topoMapa">
-      <h2>Mapa dos Blocos</h2>
-      <button onclick="fecharMapa()">✖</button>
-    </div>
-    <img src="mapa-blocos.png" id="imgMapa" alt="Mapa dos blocos">
-  </div>
+
+<div id="mapaBox">
+
+<div id="topoMapa">
+
+<h2>Mapa dos Blocos</h2>
+
+<button onclick="fecharMapa()">
+✖
+</button>
+
 </div>
 
-<script>
+<img src="mapa-blocos.png" id="imgMapa">
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+push,
+onValue,
+remove
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBW2fsq1qlA_uZj8m4HfDtdkXZqVGlDB4U",
+
+authDomain: "obra-e058e.firebaseapp.com",
+
+databaseURL: "https://obra-e058e-default-rtdb.firebaseio.com",
+
+projectId: "obra-e058e",
+
+storageBucket: "obra-e058e.firebasestorage.app",
+
+messagingSenderId: "763537647593",
+
+appId: "1:763537647593:web:c166c2283b06cf7e31cd78",
+
+measurementId: "G-X40NGVRR89"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const paredesRef = ref(db, 'paredes');
+
 const bgCanvas = document.getElementById('bgCanvas');
 const drawCanvas = document.getElementById('drawCanvas');
 const dataCanvas = document.getElementById('dataCanvas');
@@ -241,313 +327,587 @@ const responsavelBloco = document.getElementById('responsavelBloco');
 const segmentoSelect = document.getElementById('segmento');
 
 let drawing = false;
+
 let startX = 0;
 let startY = 0;
 
-let historico = JSON.parse(localStorage.getItem('controleInstalacao')) || {};
-let responsaveis = JSON.parse(localStorage.getItem('responsaveisBlocos')) || {};
+let historico = {};
+
+let responsaveis =
+JSON.parse(localStorage.getItem('responsaveisBlocos')) || {};
 
 const etapas = {
-  1:[1,2,3,4,5,6,7,8,9,10],
-  2:[11,12,13,14,15,16,17,18,19,20],
-  3:[21,22,23,24,25,26,27,28,29,30,31]
+
+1:[1,2,3,4,5,6,7,8,9,10],
+
+2:[11,12,13,14,15,16,17,18,19,20],
+
+3:[21,22,23,24,25,26,27,28,29,30,31]
+
 };
 
+async function salvarParedeOnline(parede){
+
+await push(paredesRef, parede);
+
+}
+
+onValue(paredesRef, (snapshot)=>{
+
+historico = {};
+
+snapshot.forEach((item)=>{
+
+const l = item.val();
+
+let chave = `E${l.etapa}-B${l.bloco}`;
+
+if(!historico[chave]){
+
+historico[chave] = [];
+
+}
+
+historico[chave].push(l);
+
+});
+
+redraw();
+
+});
+
 function carregarEtapas(){
-  etapaSelect.innerHTML = '';
-  for(let e in etapas){
-    let opt = document.createElement('option');
-    opt.value = e;
-    opt.textContent = `Etapa ${e}`;
-    etapaSelect.appendChild(opt);
-  }
+
+etapaSelect.innerHTML='';
+
+for(let e in etapas){
+
+let opt=document.createElement('option');
+
+opt.value=e;
+
+opt.textContent=`Etapa ${e}`;
+
+etapaSelect.appendChild(opt);
+
+}
+
 }
 
 function carregarBlocos(){
-  blocoSelect.innerHTML = '';
-  let lista = etapas[etapaSelect.value];
-  lista.forEach(b => {
-    let opt = document.createElement('option');
-    opt.value = b;
-    opt.textContent = `Bloco ${b}`;
-    blocoSelect.appendChild(opt);
-  });
+
+blocoSelect.innerHTML='';
+
+let lista = etapas[etapaSelect.value];
+
+lista.forEach(b=>{
+
+let opt=document.createElement('option');
+
+opt.value=b;
+
+opt.textContent=`Bloco ${b}`;
+
+blocoSelect.appendChild(opt);
+
+});
+
 }
 
 function chaveAtual(){
-  return `E${etapaSelect.value}-B${blocoSelect.value}`;
+
+return `E${etapaSelect.value}-B${blocoSelect.value}`;
+
 }
 
 function salvarResponsavel(){
-  responsaveis[chaveAtual()] = responsavelBloco.value;
-  localStorage.setItem('responsaveisBlocos', JSON.stringify(responsaveis));
+
+responsaveis[chaveAtual()] =
+responsavelBloco.value;
+
+localStorage.setItem(
+'responsaveisBlocos',
+JSON.stringify(responsaveis)
+);
+
 }
 
 function carregarResponsavel(){
-  if(responsaveis[chaveAtual()]){
-    responsavelBloco.value = responsaveis[chaveAtual()];
-  }else{
-    responsavelBloco.value = 'Clemilsson';
-  }
+
+if(responsaveis[chaveAtual()]){
+
+responsavelBloco.value =
+responsaveis[chaveAtual()];
+
+}else{
+
+responsavelBloco.value =
+'Clemilsson';
+
+}
+
 }
 
 function getLista(){
-  if(!historico[chaveAtual()]){
-    historico[chaveAtual()] = [];
-  }
-  return historico[chaveAtual()];
+
+if(!historico[chaveAtual()]){
+
+historico[chaveAtual()] = [];
+
 }
 
-function salvar(){
-  localStorage.setItem('controleInstalacao', JSON.stringify(historico));
+return historico[chaveAtual()];
+
 }
 
 function resizeCanvas(){
-  let rect = document.getElementById('canvasContainer').getBoundingClientRect();
 
-  [bgCanvas, drawCanvas, dataCanvas, previewCanvas].forEach(c => {
-    c.width = rect.width;
-    c.height = rect.height;
-  });
+let rect=document
+.getElementById('canvasContainer')
+.getBoundingClientRect();
 
-  loadImage();
-  redraw();
+[
+bgCanvas,
+drawCanvas,
+dataCanvas,
+previewCanvas
+].forEach(c=>{
+
+c.width=rect.width;
+c.height=rect.height;
+
+});
+
+loadImage();
+
+redraw();
+
 }
 
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener(
+'resize',
+resizeCanvas
+);
 
 function loadImage(){
-  let img = new Image();
-  img.src = 'planta.png';
-  img.onload = () => {
-    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-    bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
-  };
+
+let img=new Image();
+
+img.src='planta.png';
+
+img.onload=()=>{
+
+bgCtx.clearRect(
+0,
+0,
+bgCanvas.width,
+bgCanvas.height
+);
+
+bgCtx.drawImage(
+img,
+0,
+0,
+bgCanvas.width,
+bgCanvas.height
+);
+
+}
+
 }
 
 function getPos(e){
-  let r = drawCanvas.getBoundingClientRect();
 
-  if(e.touches){
-    return {
-      x: e.touches[0].clientX - r.left,
-      y: e.touches[0].clientY - r.top
-    };
-  }
+let r=drawCanvas.getBoundingClientRect();
 
-  return {
-    x: e.clientX - r.left,
-    y: e.clientY - r.top
-  };
+if(e.touches){
+
+return{
+x:e.touches[0].clientX-r.left,
+y:e.touches[0].clientY-r.top
+};
+
+}
+
+return{
+x:e.clientX-r.left,
+y:e.clientY-r.top
+};
+
 }
 
 function redraw(){
-  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-  dataCtx.clearRect(0, 0, dataCanvas.width, dataCanvas.height);
 
-  let areasOcupadas = [];
+drawCtx.clearRect(
+0,
+0,
+drawCanvas.width,
+drawCanvas.height
+);
 
-  getLista().forEach(l => {
-    let corLinha = l.responsavel === 'Luís Carlos' ? '#38bdf8' : '#00ff00';
+dataCtx.clearRect(
+0,
+0,
+dataCanvas.width,
+dataCanvas.height
+);
 
-    drawCtx.beginPath();
-    drawCtx.moveTo(l.x1, l.y1);
-    drawCtx.lineTo(l.x2, l.y2);
-    drawCtx.strokeStyle = corLinha;
-    drawCtx.lineWidth = 5;
-    drawCtx.stroke();
-  });
+let areasOcupadas = [];
 
-  getLista().forEach(l => {
-    let mx = (l.x1 + l.x2) / 2;
-    let my = (l.y1 + l.y2) / 2;
+getLista().forEach((l)=>{
 
-    let px = l.x2;
-    let py = l.y2;
+let corLinha =
+l.responsavel === 'Luís Carlos'
+? '#38bdf8'
+: '#00ff00';
 
-    const posicoes = [
-      {x:20, y:-20},
-      {x:20, y:20},
-      {x:-20, y:-20},
-      {x:-20, y:20}
-    ];
+drawCtx.beginPath();
 
-    let larguraBox = 130;
-    let alturaBox = 45;
+drawCtx.moveTo(l.x1,l.y1);
 
-    let tx = mx;
-    let ty = my;
-    let encontrou = false;
+drawCtx.lineTo(l.x2,l.y2);
 
-    for(let tentativa of posicoes){
-      let testX = mx + tentativa.x;
-      let testY = my + tentativa.y;
+drawCtx.strokeStyle = corLinha;
 
-      let colidiu = false;
+drawCtx.lineWidth = 5;
 
-      for(let area of areasOcupadas){
-        let bateX = testX < area.x + area.w && testX + larguraBox > area.x;
-        let bateY = testY < area.y + area.h && testY + alturaBox > area.y;
+drawCtx.stroke();
 
-        if(bateX && bateY){
-          colidiu = true;
-          break;
-        }
-      }
+});
 
-      if(!colidiu){
-        tx = testX;
-        ty = testY;
-        encontrou = true;
-        break;
-      }
-    }
+getLista().forEach((l)=>{
 
-    if(!encontrou){
-      tx = mx + 20;
-      ty = my + 20;
-    }
+let mx = (l.x1+l.x2)/2;
+let my = (l.y1+l.y2)/2;
 
-    const margem = 10;
+let px = l.x2;
+let py = l.y2;
 
-    if(tx < margem) tx = margem;
-    if(ty < margem) ty = margem;
-    if(tx + larguraBox > dataCanvas.width - margem){
-      tx = dataCanvas.width - larguraBox - margem;
-    }
-    if(ty + alturaBox > dataCanvas.height - margem){
-      ty = dataCanvas.height - alturaBox - margem;
-    }
+const posicoes = [
 
-    areasOcupadas.push({
-      x: tx,
-      y: ty,
-      w: larguraBox,
-      h: alturaBox
-    });
+{x:20,y:-20},
+{x:20,y:20},
+{x:-20,y:-20},
+{x:-20,y:20}
 
-    dataCtx.beginPath();
-    dataCtx.moveTo(px, py);
-    dataCtx.lineTo(tx, ty);
-    dataCtx.strokeStyle = 'rgba(255,255,255,0.35)';
-    dataCtx.lineWidth = 0.8;
-    dataCtx.stroke();
+];
 
-    dataCtx.font = 'bold 11px Arial';
+let larguraBox = 130;
+let alturaBox = 45;
 
-    const dataTexto = l.data;
-    const dataWidth = dataCtx.measureText(dataTexto).width;
+let tx = mx;
+let ty = my;
 
-    dataCtx.fillStyle = 'rgba(0,0,0,0.55)';
-    dataCtx.fillRect(tx - 4, ty, dataWidth + 8, 16);
+let encontrou = false;
 
-    dataCtx.fillStyle = '#facc15';
-    dataCtx.fillText(dataTexto, tx, ty + 12);
+for(let tentativa of posicoes){
 
-    const slumpTexto = `Slump: ${l.slump}`;
-    const slumpWidth = dataCtx.measureText(slumpTexto).width;
+let testX = mx + tentativa.x;
+let testY = my + tentativa.y;
 
-    dataCtx.fillStyle = 'rgba(0,0,0,0.55)';
-    dataCtx.fillRect(tx - 4, ty + 18, slumpWidth + 8, 16);
+let colidiu = false;
 
-    dataCtx.fillStyle = '#ffffff';
-    dataCtx.fillText(slumpTexto, tx, ty + 30);
-  });
+for(let area of areasOcupadas){
+
+let bateX =
+testX < area.x + area.w &&
+testX + larguraBox > area.x;
+
+let bateY =
+testY < area.y + area.h &&
+testY + alturaBox > area.y;
+
+if(bateX && bateY){
+
+colidiu = true;
+break;
+
+}
+
+}
+
+if(!colidiu){
+
+tx = testX;
+ty = testY;
+
+encontrou = true;
+break;
+
+}
+
+}
+
+if(!encontrou){
+
+tx = mx + 20;
+ty = my + 20;
+
+}
+
+const margem = 10;
+
+if(tx < margem){
+
+tx = margem;
+
+}
+
+if(ty < margem){
+
+ty = margem;
+
+}
+
+if(tx + larguraBox > dataCanvas.width - margem){
+
+tx = dataCanvas.width - larguraBox - margem;
+
+}
+
+if(ty + alturaBox > dataCanvas.height - margem){
+
+ty = dataCanvas.height - alturaBox - margem;
+
+}
+
+areasOcupadas.push({
+
+x:tx,
+y:ty,
+w:larguraBox,
+h:alturaBox
+
+});
+
+dataCtx.beginPath();
+
+dataCtx.moveTo(px,py);
+
+dataCtx.lineTo(tx,ty);
+
+dataCtx.strokeStyle='rgba(255,255,255,0.35)';
+
+dataCtx.lineWidth=0.8;
+
+dataCtx.stroke();
+
+dataCtx.font='bold 11px Arial';
+
+const dataTexto = l.data;
+
+const dataWidth =
+dataCtx.measureText(dataTexto).width;
+
+dataCtx.fillStyle='rgba(0,0,0,0.55)';
+
+dataCtx.fillRect(
+tx-4,
+ty,
+dataWidth + 8,
+16
+);
+
+dataCtx.fillStyle='#facc15';
+
+dataCtx.fillText(
+dataTexto,
+tx,
+ty+12
+);
+
+const slumpTexto = `Slump: ${l.slump}`;
+
+const slumpWidth =
+dataCtx.measureText(slumpTexto).width;
+
+dataCtx.fillStyle='rgba(0,0,0,0.55)';
+
+dataCtx.fillRect(
+tx-4,
+ty+18,
+slumpWidth + 8,
+16
+);
+
+dataCtx.fillStyle='#ffffff';
+
+dataCtx.fillText(
+slumpTexto,
+tx,
+ty+30
+);
+
+});
+
 }
 
 function startDraw(e){
-  e.preventDefault();
-  let p = getPos(e);
-  drawing = true;
-  startX = p.x;
-  startY = p.y;
+
+e.preventDefault();
+
+let p=getPos(e);
+
+drawing=true;
+
+startX=p.x;
+startY=p.y;
+
 }
 
 function moveDraw(e){
-  if(!drawing) return;
-  e.preventDefault();
 
-  let p = getPos(e);
+if(!drawing)return;
 
-  let corPreview = responsavelBloco.value === 'Luís Carlos' ? '#38bdf8' : '#00ff00';
+e.preventDefault();
 
-  previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+let p=getPos(e);
 
-  previewCtx.beginPath();
-  previewCtx.moveTo(startX, startY);
-  previewCtx.lineTo(p.x, p.y);
-  previewCtx.strokeStyle = corPreview;
-  previewCtx.lineWidth = 5;
-  previewCtx.setLineDash([8,8]);
-  previewCtx.stroke();
+let corPreview =
+responsavelBloco.value === 'Luís Carlos'
+? '#38bdf8'
+: '#00ff00';
+
+previewCtx.clearRect(
+0,
+0,
+previewCanvas.width,
+previewCanvas.height
+);
+
+previewCtx.beginPath();
+
+previewCtx.moveTo(startX,startY);
+
+previewCtx.lineTo(p.x,p.y);
+
+previewCtx.strokeStyle=corPreview;
+
+previewCtx.lineWidth=5;
+
+previewCtx.setLineDash([8,8]);
+
+previewCtx.stroke();
+
 }
 
 function endDraw(e){
-  if(!drawing) return;
-  drawing = false;
 
-  let p = getPos(e);
+if(!drawing)return;
 
-  previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+drawing=false;
 
-  if(Math.hypot(p.x - startX, p.y - startY) < 5){
-    return;
-  }
+let p=getPos(e);
 
-  let nomeParede = prompt('Digite o nome da parede:', '');
-  if(nomeParede === null) return;
+previewCtx.clearRect(
+0,
+0,
+previewCanvas.width,
+previewCanvas.height
+);
 
-  let dataInstalacao = prompt('Digite a data da instalação:', new Date().toLocaleDateString());
-  if(dataInstalacao === null) return;
+if(
+Math.hypot(
+p.x-startX,
+p.y-startY
+)<5
+){
+return;
+}
 
-  let slump = prompt('Digite o valor do slump:', '');
-  if(slump === null) return;
+let nomeParede = prompt(
+'Digite o nome da parede:',
+''
+);
 
-  getLista().push({
-    id: Date.now(),
-    x1: startX,
-    y1: startY,
-    x2: p.x,
-    y2: p.y,
-    nome: nomeParede,
-    data: dataInstalacao,
-    slump: slump,
-    segmento: segmentoSelect.value,
-    responsavel: responsavelBloco.value
-  });
+if(nomeParede===null)return;
 
-  salvar();
-  redraw();
+let dataInstalacao = prompt(
+'Digite a data da instalação:',
+new Date().toLocaleDateString()
+);
+
+if(dataInstalacao===null)return;
+
+let slump = prompt(
+'Digite o valor do slump:',
+''
+);
+
+if(slump===null)return;
+
+const parede = {
+
+id: Date.now(),
+
+etapa: etapaSelect.value,
+bloco: blocoSelect.value,
+
+x1:startX,
+y1:startY,
+
+x2:p.x,
+y2:p.y,
+
+nome:nomeParede,
+data:dataInstalacao,
+slump:slump,
+
+segmento: segmentoSelect.value,
+
+responsavel:
+responsavelBloco.value
+
+};
+
+getLista().push(parede);
+
+salvarParedeOnline(parede);
+
+redraw();
+
 }
 
 function undoLast(){
-  getLista().pop();
-  salvar();
-  redraw();
+
+alert(
+'Desfazer não disponível em tempo real ainda.'
+);
+
 }
 
 function clearCanvas(){
-  if(confirm('Deseja limpar este bloco?')){
-    historico[chaveAtual()] = [];
-    salvar();
-    redraw();
-  }
+
+alert(
+'Limpeza geral será adicionada depois.'
+);
+
 }
 
 function downloadImage(){
-  let temp = document.createElement('canvas');
-  temp.width = bgCanvas.width;
-  temp.height = bgCanvas.height;
 
-  let t = temp.getContext('2d');
-  t.drawImage(bgCanvas, 0, 0);
-  t.drawImage(drawCanvas, 0, 0);
-  t.drawImage(dataCanvas, 0, 0);
+let temp=document.createElement('canvas');
 
-  let a = document.createElement('a');
-  a.href = temp.toDataURL();
-  a.download = chaveAtual() + '.png';
-  a.click();
+temp.width=bgCanvas.width;
+
+temp.height=bgCanvas.height;
+
+let t=temp.getContext('2d');
+
+t.drawImage(bgCanvas,0,0);
+
+t.drawImage(drawCanvas,0,0);
+
+t.drawImage(dataCanvas,0,0);
+
+let a=document.createElement('a');
+
+a.href=temp.toDataURL();
+
+a.download=chaveAtual()+'.png';
+
+a.click();
+
 }
 
 function gerarRelatorio(){
@@ -570,8 +930,8 @@ let hoje = new Date().toLocaleDateString();
 let lista = getLista();
 
 let listaFiltrada = (tipo === '2')
-  ? lista.filter(l => l.data === hoje)
-  : [...lista];
+? lista.filter(l => l.data === hoje)
+: [...lista];
 
 function dadosMunck(responsavel){
 
@@ -579,18 +939,18 @@ if(responsavel === 'Luís Carlos'){
 
 return `
 🚛 Munck utilizado:
-   Cor: Branca
-   Placa: MVR3D39
-   Operador: Raimundo
+Cor: Branca
+Placa: MVR3D39
+Operador: Raimundo
 `;
 
 }
 
 return `
 🚛 Munck utilizado:
-   Cor: Vermelha
-   Placa: RXT6G61
-   Operador: Jean
+Cor: Vermelha
+Placa: RXT6G61
+Operador: Jean
 `;
 
 }
@@ -601,8 +961,7 @@ let texto = `
 🏗 Obra: Jardim Bacabal
 👷 Engenheiro Civil: Felipe Rodrigues
 📅 Data do Relatório: ${hoje}
-🏢 ${chaveAtual()}  
-
+🏢 ${chaveAtual()}
 
 `;
 
@@ -617,8 +976,6 @@ texto += dadosMunck(resp);
 texto += `\n`;
 
 });
-
-texto += `                       \n\n`;
 
 let grupos = {};
 
@@ -683,38 +1040,88 @@ alert('Relatório copiado!');
 }
 
 function abrirMapa(){
-  document.getElementById('mapaModal').style.display = 'flex';
+
+document.getElementById('mapaModal')
+.style.display='flex';
+
 }
 
 function fecharMapa(){
-  document.getElementById('mapaModal').style.display = 'none';
+
+document.getElementById('mapaModal')
+.style.display='none';
+
 }
 
-etapaSelect.addEventListener('change', () => {
-  carregarBlocos();
-  carregarResponsavel();
-  redraw();
-});
+etapaSelect.addEventListener(
+'change',
+()=>{
 
-blocoSelect.addEventListener('change', () => {
-  carregarResponsavel();
-  redraw();
-});
+carregarBlocos();
 
-responsavelBloco.addEventListener('change', salvarResponsavel);
+carregarResponsavel();
 
-drawCanvas.addEventListener('mousedown', startDraw);
-drawCanvas.addEventListener('mousemove', moveDraw);
-drawCanvas.addEventListener('mouseup', endDraw);
+redraw();
 
-drawCanvas.addEventListener('touchstart', startDraw, { passive:false });
-drawCanvas.addEventListener('touchmove', moveDraw, { passive:false });
-drawCanvas.addEventListener('touchend', endDraw);
+}
+);
+
+blocoSelect.addEventListener(
+'change',
+()=>{
+
+carregarResponsavel();
+
+redraw();
+
+}
+);
+
+responsavelBloco.addEventListener(
+'change',
+salvarResponsavel
+);
+
+drawCanvas.addEventListener(
+'mousedown',
+startDraw
+);
+
+drawCanvas.addEventListener(
+'mousemove',
+moveDraw
+);
+
+drawCanvas.addEventListener(
+'mouseup',
+endDraw
+);
+
+drawCanvas.addEventListener(
+'touchstart',
+startDraw,
+{ passive:false }
+);
+
+drawCanvas.addEventListener(
+'touchmove',
+moveDraw,
+{ passive:false }
+);
+
+drawCanvas.addEventListener(
+'touchend',
+endDraw
+);
 
 carregarEtapas();
+
 carregarBlocos();
+
 carregarResponsavel();
+
 resizeCanvas();
+
 </script>
 
 </body>
