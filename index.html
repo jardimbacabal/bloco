@@ -1046,11 +1046,22 @@ texto += `${segmento}\n\n`;
 
 grupos[segmento].forEach(l => {
 
+if(tipo === '2'){
+
+texto += `
+• Parede: ${l.nome}
+• Slump: ${l.slump}
+`;
+
+}else{
+
 texto += `
 • Parede: ${l.nome}
 • Data: ${l.data}
 • Slump: ${l.slump}
 `;
+
+}
 
 total++;
 
