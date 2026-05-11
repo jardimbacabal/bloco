@@ -282,7 +282,8 @@ getDatabase,
 ref,
 push,
 onValue,
-remove
+remove,
+child
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -348,7 +349,9 @@ const etapas = {
 
 async function salvarParedeOnline(parede){
 
-await push(paredesRef, parede);
+const novaParede = await push(paredesRef, parede);
+
+parede.firebaseId = novaParede.key;
 
 }
 
@@ -359,6 +362,8 @@ historico = {};
 snapshot.forEach((item)=>{
 
 const l = item.val();
+
+l.firebaseId = item.key;
 
 let chave = `E${l.etapa}-B${l.bloco}`;
 
@@ -868,19 +873,47 @@ redraw();
 
 }
 
-function undoLast(){
+async function undoLast(){
 
-alert(
-'Desfazer não disponível em tempo real ainda.'
+let lista = getLista();
+
+if(lista.length === 0){
+alert('Nenhuma parede.');
+return;
+}
+
+let ultima = lista[lista.length - 1];
+
+if(!ultima.firebaseId){
+alert('Erro ao localizar parede.');
+return;
+}
+
+await remove(
+ref(db, `paredes/${ultima.firebaseId}`)
 );
 
 }
 
-function clearCanvas(){
+async function clearCanvas(){
 
-alert(
-'Limpeza geral será adicionada depois.'
+if(!confirm('Deseja limpar este bloco?')){
+return;
+}
+
+let lista = getLista();
+
+for(let l of lista){
+
+if(l.firebaseId){
+
+await remove(
+ref(db, `paredes/${l.firebaseId}`)
 );
+
+}
+
+}
 
 }
 
