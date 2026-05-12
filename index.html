@@ -210,25 +210,15 @@ Responsável: Luís Carlos
 
 </select>
 
-<button onclick="abrirMapa()">
-🗺 Mapa
-</button>
+<button onclick="abrirMapa()">🗺 Mapa</button>
 
-<button onclick="undoLast()">
-↩ Desfazer
-</button>
+<button onclick="undoLast()">↩ Desfazer</button>
 
-<button onclick="downloadImage()">
-📸 Baixar Planta
-</button>
+<button onclick="downloadImage()">📸 Baixar Planta</button>
 
-<button onclick="gerarRelatorio()">
-📋 Gerar Relatório
-</button>
+<button onclick="gerarRelatorio()">📋 Gerar Relatório</button>
 
-<button onclick="clearCanvas()">
-🗑 Limpar
-</button>
+<button onclick="clearCanvas()">🗑 Limpar</button>
 
 <div id="miniLegenda">
 
@@ -261,9 +251,7 @@ Parede Instalada
 
 <h2>Mapa dos Blocos</h2>
 
-<button onclick="fecharMapa()">
-✖
-</button>
+<button onclick="fecharMapa()">✖</button>
 
 </div>
 
@@ -282,8 +270,7 @@ getDatabase,
 ref,
 push,
 onValue,
-remove,
-child
+remove
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -334,9 +321,6 @@ let startY = 0;
 
 let historico = {};
 
-let responsaveis =
-JSON.parse(localStorage.getItem('responsaveisBlocos')) || {};
-
 const etapas = {
 
 1:[1,2,3,4,5,6,7,8,9,10],
@@ -346,14 +330,6 @@ const etapas = {
 3:[21,22,23,24,25,26,27,28,29,30,31]
 
 };
-
-async function salvarParedeOnline(parede){
-
-const novaParede = await push(paredesRef, parede);
-
-parede.firebaseId = novaParede.key;
-
-}
 
 onValue(paredesRef, (snapshot)=>{
 
@@ -422,34 +398,6 @@ blocoSelect.appendChild(opt);
 function chaveAtual(){
 
 return `E${etapaSelect.value}-B${blocoSelect.value}`;
-
-}
-
-function salvarResponsavel(){
-
-responsaveis[chaveAtual()] =
-responsavelBloco.value;
-
-localStorage.setItem(
-'responsaveisBlocos',
-JSON.stringify(responsaveis)
-);
-
-}
-
-function carregarResponsavel(){
-
-if(responsaveis[chaveAtual()]){
-
-responsavelBloco.value =
-responsaveis[chaveAtual()];
-
-}else{
-
-responsavelBloco.value =
-'Clemilsson';
-
-}
 
 }
 
@@ -563,14 +511,20 @@ getLista().forEach((l)=>{
 
 let corLinha =
 l.responsavel === 'Luís Carlos'
-? '#00ff00'
+? '#0f766e'
 : '#00ff00';
 
 drawCtx.beginPath();
 
-drawCtx.moveTo(l.x1,l.y1);
+drawCtx.moveTo(
+l.x1 * drawCanvas.width,
+l.y1 * drawCanvas.height
+);
 
-drawCtx.lineTo(l.x2,l.y2);
+drawCtx.lineTo(
+l.x2 * drawCanvas.width,
+l.y2 * drawCanvas.height
+);
 
 drawCtx.strokeStyle = corLinha;
 
@@ -582,11 +536,17 @@ drawCtx.stroke();
 
 getLista().forEach((l)=>{
 
-let mx = (l.x1+l.x2)/2;
-let my = (l.y1+l.y2)/2;
+let realX1 = l.x1 * drawCanvas.width;
+let realY1 = l.y1 * drawCanvas.height;
 
-let px = l.x2;
-let py = l.y2;
+let realX2 = l.x2 * drawCanvas.width;
+let realY2 = l.y2 * drawCanvas.height;
+
+let mx = (realX1 + realX2) / 2;
+let my = (realY1 + realY2) / 2;
+
+let px = realX2;
+let py = realY2;
 
 const posicoes = [
 
@@ -640,39 +600,6 @@ encontrou = true;
 break;
 
 }
-
-}
-
-if(!encontrou){
-
-tx = mx + 20;
-ty = my + 20;
-
-}
-
-const margem = 10;
-
-if(tx < margem){
-
-tx = margem;
-
-}
-
-if(ty < margem){
-
-ty = margem;
-
-}
-
-if(tx + larguraBox > dataCanvas.width - margem){
-
-tx = dataCanvas.width - larguraBox - margem;
-
-}
-
-if(ty + alturaBox > dataCanvas.height - margem){
-
-ty = dataCanvas.height - alturaBox - margem;
 
 }
 
@@ -770,7 +697,7 @@ let p=getPos(e);
 
 let corPreview =
 responsavelBloco.value === 'Luís Carlos'
-? '#00ff00'
+? '#0f766e'
 : '#00ff00';
 
 previewCtx.clearRect(
@@ -796,7 +723,7 @@ previewCtx.stroke();
 
 }
 
-function endDraw(e){
+async function endDraw(e){
 
 if(!drawing)return;
 
@@ -843,16 +770,14 @@ if(slump===null)return;
 
 const parede = {
 
-id: Date.now(),
-
 etapa: etapaSelect.value,
 bloco: blocoSelect.value,
 
-x1:startX,
-y1:startY,
+x1:startX / drawCanvas.width,
+y1:startY / drawCanvas.height,
 
-x2:p.x,
-y2:p.y,
+x2:p.x / drawCanvas.width,
+y2:p.y / drawCanvas.height,
 
 nome:nomeParede,
 data:dataInstalacao,
@@ -865,11 +790,7 @@ responsavelBloco.value
 
 };
 
-getLista().push(parede);
-
-salvarParedeOnline(parede);
-
-redraw();
+await push(paredesRef, parede);
 
 }
 
@@ -883,11 +804,6 @@ return;
 }
 
 let ultima = lista[lista.length - 1];
-
-if(!ultima.firebaseId){
-alert('Erro ao localizar parede.');
-return;
-}
 
 await remove(
 ref(db, `paredes/${ultima.firebaseId}`)
@@ -905,13 +821,9 @@ let lista = getLista();
 
 for(let l of lista){
 
-if(l.firebaseId){
-
 await remove(
 ref(db, `paredes/${l.firebaseId}`)
 );
-
-}
 
 }
 
@@ -981,7 +893,7 @@ Operador: Raimundo
 
 return `
 🚛 Munck utilizado:
-Cor: BRANCO
+Cor: Branco
 Placa: MVR3D39
 Operador: Jean
 `;
@@ -989,10 +901,10 @@ Operador: Jean
 }
 
 let texto = `
-📋 *RELATÓRIO DE INSTALAÇÃO*
+📋 RELATÓRIO DE INSTALAÇÃO
 
-🏗 *Obra: Jardim Bacabal*
-👷 *Engenheiro Civil:* _Felipe Rodrigues_
+🏗 Obra: Jardim Bacabal
+👷 Engenheiro Civil: Felipe Rodrigues
 📅 Data do Relatório: ${hoje}
 🏢 ${chaveAtual()}
 
@@ -1000,7 +912,7 @@ let texto = `
 
 let responsaveisUsados = [...new Set(listaFiltrada.map(l => l.responsavel))];
 
-texto += `MUNCK(S) UTILIZADO(S) NO DIA\n\n`;
+texto += `MUNCK(S) UTILIZADO(S)\n\n`;
 
 responsaveisUsados.forEach(resp => {
 
@@ -1022,23 +934,9 @@ grupos[l.segmento].push(l);
 
 });
 
-let segmentosOrdenados = Object.keys(grupos).sort((a, b) => {
-let numA = parseInt(a.replace(/\D/g, '')) || 0;
-let numB = parseInt(b.replace(/\D/g, '')) || 0;
-return numA - numB;
-});
+let segmentosOrdenados = Object.keys(grupos);
 
 let total = 0;
-
-if(tipo === '2'){
-
-texto += `RELATÓRIO DO DIA\n\n`;
-
-}else{
-
-texto += `RELATÓRIO GERAL\n\n`;
-
-}
 
 segmentosOrdenados.forEach(segmento => {
 
@@ -1103,8 +1001,6 @@ etapaSelect.addEventListener(
 
 carregarBlocos();
 
-carregarResponsavel();
-
 redraw();
 
 }
@@ -1114,16 +1010,9 @@ blocoSelect.addEventListener(
 'change',
 ()=>{
 
-carregarResponsavel();
-
 redraw();
 
 }
-);
-
-responsavelBloco.addEventListener(
-'change',
-salvarResponsavel
 );
 
 drawCanvas.addEventListener(
@@ -1163,13 +1052,11 @@ window.clearCanvas = clearCanvas;
 window.downloadImage = downloadImage;
 window.gerarRelatorio = gerarRelatorio;
 window.abrirMapa = abrirMapa;
-window.fecharMapa = fecharMapa;  
-  
+window.fecharMapa = fecharMapa;
+
 carregarEtapas();
 
 carregarBlocos();
-
-carregarResponsavel();
 
 resizeCanvas();
 
